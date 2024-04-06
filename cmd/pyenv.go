@@ -15,7 +15,7 @@ var pyenvCmd = &cobra.Command{
 	Short: "Install Python Version Management",
 	Long: `Install pyenv from its website https://pyenv.run.
 
-Provide a version for install, default is 3.9`,
+Provide a version for install, default is 3.9. By default, the path environment variable is configured on .profile file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("pyenv called")
 	},
@@ -32,5 +32,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// pyenvCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	pyenvCmd.Flags().StringP("version", "v", "", "Install the Node.js version specified")
 }

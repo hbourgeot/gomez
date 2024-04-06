@@ -13,11 +13,8 @@ import (
 var fnmCmd = &cobra.Command{
 	Use:   "fnm",
 	Short: "Install Fast Node Manager (fnm)",
-	Long: `Install Fast Node Manager from its website and configure it properly.
-
-Gomez will install it fnm from https://fnm.vercel.app/install
-
-`,
+	Long: `Gomez will install fnm from https://fnm.vercel.app/install, by default, it will configure the path environment variable
+in the .profile file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("fnm called")
 	},
@@ -32,7 +29,6 @@ func init() {
 	// and all subcommands, e.g.:
 	// fnmCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// fnmCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fnmCmd.Flags().BoolP("lts", "l", true, "Install the latest LTS Node.js version")
+	fnmCmd.Flags().StringP("version", "v", "", "Install the Node.js version specified")
 }

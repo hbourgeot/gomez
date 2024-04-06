@@ -15,7 +15,7 @@ var rootCmd = &cobra.Command{
 	Short: "Gomez, your installer helper",
 	Long: `
 Gomez, your loyal helper for install some programming tools, like: Fast Node Manager (fnm), Pyenv,
-Node Version Manager (nvm), Cargo, SDKMan and Make, for now.
+Node Version Manager (nvm), Cargo and SDKMan, for now.
 
 Why I'm developing this CLI? For automatize the installations of the most programming tools needed
 for programmers. With a few keys press. Don't go to the github page of any of these, Gomez can help
@@ -46,8 +46,12 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gomez.yaml)")
+	rootCmd.PersistentFlags().BoolP("bash", "b", false, "Install for Bash")
+	rootCmd.PersistentFlags().BoolP("zsh", "z", false, "Install for ZSH")
+	rootCmd.PersistentFlags().BoolP("fish", "f", false, "Install for fish")
+	rootCmd.PersistentFlags().BoolP("profile", "p", true, "Install for .profile file")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
