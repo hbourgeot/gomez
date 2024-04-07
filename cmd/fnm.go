@@ -36,13 +36,13 @@ in the .profile file.`,
 
 		if forZsh {
 			shell = "zsh"
-			sourceFile = "$HOME/.zshrc"
+			sourceFile = "~/.zshrc"
 		} else if forFish {
 			shell = "fish"
-			sourceFile = "$HOME/.config/fish/config.fish"
+			sourceFile = "~/.config/fish/config.fish"
 		} else if forBash {
 			shell = "bash"
-			sourceFile = "$HOME/.bashrc"
+			sourceFile = "~/.bashrc"
 		}
 
 		// Call the function to install fnm

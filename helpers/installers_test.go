@@ -18,19 +18,19 @@ func TestInstallFnm(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: string("Test fnm installation with a version with a v prefix"),
+			name: "Test fnm installation with a version with a v prefix",
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
-				version:    string("v1.22.0"),
+				shell:      "zsh",
+				sourceFile: "~/.zshrc",
+				version:    "v1.22.0",
 			},
 			wantErr: true,
 		},
 		{
-			name: string("Test fnm installation with a invalid version"),
+			name: "Test fnm installation with a invalid version",
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      "zsh",
+				sourceFile: string("~/.zshrc"),
 				version:    string("1.22.0"),
 			},
 			wantErr: true,
@@ -38,8 +38,8 @@ func TestInstallFnm(t *testing.T) {
 		{
 			name: string("Test fnm installation with a valid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("18"),
 			},
 			wantErr: false,
@@ -51,7 +51,7 @@ func TestInstallFnm(t *testing.T) {
 				t.Errorf("InstallFnm() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			deleteAfterTest("fnm")
+			// deleteAfterTest("fnm")
 		})
 	}
 }
@@ -70,8 +70,8 @@ func TestInstallPyenv(t *testing.T) {
 		{
 			name: string("Test pyenv installation with a version with a v prefix"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("v1.22.0"),
 			},
 			wantErr: true,
@@ -79,8 +79,8 @@ func TestInstallPyenv(t *testing.T) {
 		{
 			name: string("Test pyenv installation with a invalid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("1.22.0"),
 			},
 			wantErr: true,
@@ -88,8 +88,8 @@ func TestInstallPyenv(t *testing.T) {
 		{
 			name: string("Test pyenv installation with a valid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("3.8"),
 			},
 			wantErr: false,
@@ -120,8 +120,8 @@ func TestInstallNvm(t *testing.T) {
 		{
 			name: string("Test nvm installation with a version with a v prefix"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("v1.22.0"),
 			},
 			wantErr: true,
@@ -129,8 +129,8 @@ func TestInstallNvm(t *testing.T) {
 		{
 			name: string("Test nvm installation with a invalid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("1.22.0"),
 			},
 			wantErr: true,
@@ -138,8 +138,8 @@ func TestInstallNvm(t *testing.T) {
 		{
 			name: string("Test nvm installation with a valid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("18"),
 			},
 			wantErr: false,
@@ -151,7 +151,7 @@ func TestInstallNvm(t *testing.T) {
 				t.Errorf("InstallNvm() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			deleteAfterTest("nvm")
+			// deleteAfterTest("nvm")
 		})
 	}
 }
@@ -170,8 +170,8 @@ func TestInstallSdkman(t *testing.T) {
 		{
 			name: string("Test sdk installation with a version with a v prefix"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("v1.22.0"),
 			},
 			wantErr: true,
@@ -179,8 +179,8 @@ func TestInstallSdkman(t *testing.T) {
 		{
 			name: string("Test sdk installation with a invalid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("1.22.0"),
 			},
 			wantErr: true,
@@ -188,8 +188,8 @@ func TestInstallSdkman(t *testing.T) {
 		{
 			name: string("Test sdk installation with a valid version"),
 			args: args{
-				shell:      string("bash"),
-				sourceFile: string("~/.bashrc"),
+				shell:      string("zsh"),
+				sourceFile: string("~/.zshrc"),
 				version:    string("21"),
 			},
 			wantErr: false,
@@ -201,7 +201,7 @@ func TestInstallSdkman(t *testing.T) {
 				t.Errorf("InstallSdkman() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			deleteAfterTest("sdkman")
+			// deleteAfterTest("sdkman")
 		})
 	}
 }

@@ -1,9 +1,11 @@
 package helpers
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func InstallFnm(shell, sourceFile, version string) error {
@@ -36,20 +38,63 @@ func InstallFnm(shell, sourceFile, version string) error {
 	}
 
 	fmt.Println("fnm installed successfully")
-	fmt.Println("Refreshing changes in terminal with source")
-	cmd = exec.Command(shell, "-c", "source "+sourceFile)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	if shell != "bash" {
+		homedir, _ := os.UserHomeDir()
+		fnmPath := fmt.Sprintf("# fnm\nexport PATH=\"%s/.local/share/fnm:$PATH\neval \"`fnm env`\"\n\n", homedir)
 
-	err = cmd.Run()
-	if err != nil {
-		return err
+		fmt.Println("Adding fnm to PATH")
+		sourceFileDir := homedir + "/" + strings.Replace(sourceFile, "~/", "", 1)
+
+		// Open the file in read mode
+		file, err := os.Open(sourceFileDir)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return err
+		}
+		defer file.Close()
+
+		// Check if the file already contains the fnm path
+		scanner := bufio.NewScanner(file)
+		inserted := false
+		for scanner.Scan() {
+			if strings.Contains(scanner.Text(), "# fnm") {
+				fmt.Println("fnm already added to PATH")
+				inserted = true
+				break
+			}
+		}
+
+		// If the string doesn't exist, open the file in append mode and add the string
+		if !inserted {
+			file, err := os.OpenFile(sourceFileDir, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
+			if err != nil {
+				fmt.Println("Error:", err)
+				return err
+			}
+			defer file.Close()
+
+			// Create a buffered writer from the file
+			writer := bufio.NewWriter(file)
+
+			// Write the text to the file
+			_, err = writer.WriteString(fnmPath)
+			if err != nil {
+				fmt.Println("Error:", err)
+				return err
+			}
+
+			// Flush the buffered writer to ensure all data is written to the file
+			err = writer.Flush()
+			if err != nil {
+				fmt.Println("Error:", err)
+				return err
+			}
+		}
 	}
 
-	fmt.Println("Changes refreshed successfully")
 	fmt.Println("Installing Node.js version", version)
-	cmd = exec.Command("fnm", "install", version)
+	cmd = exec.Command(shell, "-c", "source "+sourceFile+" && fnm install "+version)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -101,20 +146,65 @@ func InstallPyenv(shell, sourceFile, version string) error {
 	}
 
 	fmt.Println("pyenv installed successfully")
-	fmt.Println("Refreshing changes in terminal with source")
-	cmd = exec.Command(shell, "-c", "source "+sourceFile)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	fmt.Println("Adding pyenv to PATH")
+	pyenvPath := `export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+   
+   `
 
-	err = cmd.Run()
+	homedir, _ := os.UserHomeDir()
+	sourceFileDir := homedir + "/" + strings.Replace(sourceFile, "~/", "", 1)
+
+	// Open the file in read mode
+	file, err := os.Open(sourceFileDir)
 	if err != nil {
+		fmt.Println("Error:", err)
 		return err
 	}
+	defer file.Close()
 
-	fmt.Println("Changes refreshed successfully")
-	fmt.Println("Installing Python version", version)
-	cmd = exec.Command("pyenv", "install", version)
+	// Check if the file already contains the pyenv path
+	scanner := bufio.NewScanner(file)
+	inserted := false
+	for scanner.Scan() {
+		if strings.Contains(scanner.Text(), "PYENV_ROOT") {
+			fmt.Println("pyenv already added to PATH")
+			inserted = true
+			break
+		}
+	}
+
+	// If the string doesn't exist, open the file in append mode and add the string
+	if !inserted {
+		file, err := os.OpenFile(sourceFileDir, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return err
+		}
+		defer file.Close()
+
+		// Create a buffered writer from the file
+		writer := bufio.NewWriter(file)
+
+		// Write the text to the file
+		_, err = writer.WriteString(pyenvPath)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return err
+		}
+
+		// Flush the buffered writer to ensure all data is written to the file
+		err = writer.Flush()
+		if err != nil {
+			fmt.Println("Error:", err)
+			return err
+		}
+	}
+
+	fmt.Println("Refreshing changes in terminal with source")
+	cmd = exec.Command(shell, "-c", "source "+sourceFile+" && pyenv install "+version)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -166,8 +256,8 @@ func InstallNvm(shell, sourceFile, version string) error {
 	}
 
 	fmt.Println("nvm installed successfully")
-	fmt.Println("Refreshing changes in terminal with source")
-	cmd = exec.Command("source", sourceFile)
+	fmt.Println("Installing Node.js version", version)
+	cmd = exec.Command(shell, "-c", "source "+sourceFile+" && nvm install "+version)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -178,17 +268,6 @@ func InstallNvm(shell, sourceFile, version string) error {
 	}
 
 	err = cmd.Wait()
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Changes refreshed successfully")
-	fmt.Println("Installing Node.js version", version)
-	cmd = exec.Command(shell, "-c", "source "+sourceFile)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	err = cmd.Run()
 	if err != nil {
 		return err
 	}
