@@ -10,22 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// pyenvCmd represents the pyenv command
-var pyenvCmd = &cobra.Command{
-	Use:   "pyenv",
-	Short: "Install Python Version Management",
-	Long: `Install pyenv from its website https://pyenv.run.
+// cargoCmd represents the cargo command
+var cargoCmd = &cobra.Command{
+	Use:   "cargo",
+	Short: "Cargo, the package manager for Rust",
+	Long: `Cargo is the package manager for Rust. It is used to compile, test, and run Rust programs.
 
-Provide a version for install, default is 3.9. By default, the path environment variable is configured on .profile file.`,
+Gomez will install Cargo from https://rustup.rs/ and configure the path environment variable.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// variables
-		var version, shell, sourceFile string
-		// version
-		version, _ = cmd.Flags().GetString("version")
-		if version == "" {
-			version = "3.10"
-		}
-		fmt.Println("Installing Python version", version)
+		var shell, sourceFile string
 
 		forZsh, _ := cmd.Flags().GetBool("zsh")
 		forBash, _ := cmd.Flags().GetBool("bash")
@@ -43,9 +37,9 @@ Provide a version for install, default is 3.9. By default, the path environment 
 		}
 
 		// Call the function to install fnm
-		err := helpers.InstallPyenv(shell, sourceFile, version)
+		err := helpers.InstallCargo(shell, sourceFile)
 		if err != nil {
-			fmt.Println("Error installing pyenv")
+			fmt.Println("Error installing cargo")
 			fmt.Println(err)
 			return
 		}
@@ -55,16 +49,15 @@ Provide a version for install, default is 3.9. By default, the path environment 
 }
 
 func init() {
-	rootCmd.AddCommand(pyenvCmd)
+	rootCmd.AddCommand(cargoCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// pyenvCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// cargoCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-
-	pyenvCmd.Flags().StringP("version", "v", "", "Install the Node.js version specified")
+	// cargoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

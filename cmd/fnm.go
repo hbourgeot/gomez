@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hbourgeot/gomez/helpers"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +17,43 @@ var fnmCmd = &cobra.Command{
 	Long: `Gomez will install fnm from https://fnm.vercel.app/install, by default, it will configure the path environment variable
 in the .profile file.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("fnm called")
+		// variables
+		var version, shell, sourceFile string
+		// version
+		lts, _ := cmd.Flags().GetBool("lts")
+
+		if lts && version == "" {
+			fmt.Println("Installing the latest LTS Node.js version (20.12.1)")
+			version = "20.12.1"
+		} else {
+			version, _ = cmd.Flags().GetString("version")
+			fmt.Println("Installing Node.js version", version)
+		}
+
+		forZsh, _ := cmd.Flags().GetBool("zsh")
+		forBash, _ := cmd.Flags().GetBool("bash")
+		forFish, _ := cmd.Flags().GetBool("fish")
+
+		if forZsh {
+			shell = "zsh"
+			sourceFile = "$HOME/.zshrc"
+		} else if forFish {
+			shell = "fish"
+			sourceFile = "$HOME/.config/fish/config.fish"
+		} else if forBash {
+			shell = "bash"
+			sourceFile = "$HOME/.bashrc"
+		}
+
+		// Call the function to install fnm
+		err := helpers.InstallFnm(shell, sourceFile, version)
+		if err != nil {
+			fmt.Println("Error installing fnm")
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println("Process finished.")
 	},
 }
 

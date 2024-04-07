@@ -10,22 +10,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// pyenvCmd represents the pyenv command
-var pyenvCmd = &cobra.Command{
-	Use:   "pyenv",
-	Short: "Install Python Version Management",
-	Long: `Install pyenv from its website https://pyenv.run.
+// nvmCmd represents the nvm command
+var nvmCmd = &cobra.Command{
+	Use:   "nvm",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
 
-Provide a version for install, default is 3.9. By default, the path environment variable is configured on .profile file.`,
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// variables
 		var version, shell, sourceFile string
 		// version
+		lts, _ := cmd.Flags().GetBool("lts")
+
 		version, _ = cmd.Flags().GetString("version")
-		if version == "" {
-			version = "3.10"
+
+		if lts && version == "" {
+			fmt.Println("Installing the latest LTS Node.js version (20.12.1)")
+			version = "20.12.1"
+		} else {
+			fmt.Println("Installing Node.js version", version)
 		}
-		fmt.Println("Installing Python version", version)
 
 		forZsh, _ := cmd.Flags().GetBool("zsh")
 		forBash, _ := cmd.Flags().GetBool("bash")
@@ -43,9 +51,9 @@ Provide a version for install, default is 3.9. By default, the path environment 
 		}
 
 		// Call the function to install fnm
-		err := helpers.InstallPyenv(shell, sourceFile, version)
+		err := helpers.InstallNvm(shell, sourceFile, version)
 		if err != nil {
-			fmt.Println("Error installing pyenv")
+			fmt.Println("Error installing nvm")
 			fmt.Println(err)
 			return
 		}
@@ -55,16 +63,17 @@ Provide a version for install, default is 3.9. By default, the path environment 
 }
 
 func init() {
-	rootCmd.AddCommand(pyenvCmd)
+	rootCmd.AddCommand(nvmCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// pyenvCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// nvmCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-
-	pyenvCmd.Flags().StringP("version", "v", "", "Install the Node.js version specified")
+	// nvmCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	nvmCmd.Flags().BoolP("lts", "l", true, "Install the latest LTS Node.js version")
+	nvmCmd.Flags().StringP("version", "v", "", "Install the Node.js version specified")
 }

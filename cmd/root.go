@@ -46,10 +46,9 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gomez.yaml)")
-	rootCmd.PersistentFlags().BoolP("bash", "b", false, "Install for Bash")
+	rootCmd.PersistentFlags().BoolP("bash", "b", true, "Install for Bash")
 	rootCmd.PersistentFlags().BoolP("zsh", "z", false, "Install for ZSH")
 	rootCmd.PersistentFlags().BoolP("fish", "f", false, "Install for fish")
-	rootCmd.PersistentFlags().BoolP("profile", "p", true, "Install for .profile file")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
