@@ -41,7 +41,7 @@ func InstallFnm(shell, sourceFile, version string) error {
 
 	if shell != "bash" {
 		homedir, _ := os.UserHomeDir()
-		fnmPath := fmt.Sprintf("# fnm\nexport PATH=\"%s/.local/share/fnm:$PATH\neval \"`fnm env`\"\n\n", homedir)
+		fnmPath := fmt.Sprintf("# fnm\nexport PATH=\"%s/.local/share/fnm:$PATH\"\neval `fnm env`\n\n", homedir)
 
 		fmt.Println("Adding fnm to PATH")
 		sourceFileDir := homedir + "/" + strings.Replace(sourceFile, "~/", "", 1)
@@ -148,11 +148,8 @@ func InstallPyenv(shell, sourceFile, version string) error {
 	fmt.Println("pyenv installed successfully")
 
 	fmt.Println("Adding pyenv to PATH")
-	pyenvPath := `export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-   
-   `
+
+	pyenvPath := "export PYENV_ROOT=\"$HOME/.pyenv\"\n[[ -d $PYENV_ROOT/bin ]] && export PATH=\"$PYENV_ROOT/bin:$PATH\"\neval \"$(pyenv init -)\"\n\n"
 
 	homedir, _ := os.UserHomeDir()
 	sourceFileDir := homedir + "/" + strings.Replace(sourceFile, "~/", "", 1)

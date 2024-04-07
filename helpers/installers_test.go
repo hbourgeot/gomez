@@ -100,8 +100,9 @@ func TestInstallPyenv(t *testing.T) {
 			if err := InstallPyenv(tt.args.shell, tt.args.sourceFile, tt.args.version); (err != nil) != tt.wantErr {
 				t.Errorf("InstallPyenv() error = %v, wantErr %v", err, tt.wantErr)
 			}
-
-			deleteAfterTest("pyenv")
+			if tt.name != "Test pyenv installation with a valid version" {
+				deleteAfterTest("pyenv")
+			}
 		})
 	}
 }
