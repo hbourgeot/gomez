@@ -27,6 +27,4 @@ jobs:
       - name: Test (using ZSH)
         run: |
           set -euo pipefail
-          sh -c "export GOROOT_BOOTSTRAP=$(which go) && \
-                 export PATH=$GOROOT_BOOTSTRAP/bin:$PATH && \
-                 zsh -c 'go test -v ./...'"
+          sh -c "zsh -c 'go test -v ./...'"
