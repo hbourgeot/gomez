@@ -3,6 +3,7 @@ package helpers
 import (
 	"bufio"
 	"fmt"
+	"github.com/hbourgeot/gomez/colors"
 	"os"
 	"os/exec"
 	"strings"
@@ -37,19 +38,18 @@ func InstallFnm(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("fnm installed successfully")
+	fmt.Println(colors.Green + "fnm installed successfully" + colors.Reset)
 
 	if shell != "bash" {
 		homedir, _ := os.UserHomeDir()
 		fnmPath := fmt.Sprintf("# fnm\nexport PATH=\"%s/.local/share/fnm:$PATH\"\neval `fnm env`\n\n", homedir)
 
-		fmt.Println("Adding fnm to PATH")
+		fmt.Println(colors.Cyan + "Adding fnm to PATH" + colors.Reset)
 		sourceFileDir := homedir + "/" + strings.Replace(sourceFile, "~/", "", 1)
 
 		// Open the file in read mode
 		file, err := os.Open(sourceFileDir)
 		if err != nil {
-			fmt.Println("Error:", err)
 			return err
 		}
 		defer file.Close()
@@ -59,7 +59,7 @@ func InstallFnm(shell, sourceFile, version string) error {
 		inserted := false
 		for scanner.Scan() {
 			if strings.Contains(scanner.Text(), "# fnm") {
-				fmt.Println("fnm already added to PATH")
+				fmt.Println(colors.Yellow + "fnm already added to PATH" + colors.Reset)
 				inserted = true
 				break
 			}
@@ -69,7 +69,6 @@ func InstallFnm(shell, sourceFile, version string) error {
 		if !inserted {
 			file, err := os.OpenFile(sourceFileDir, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
 			if err != nil {
-				fmt.Println("Error:", err)
 				return err
 			}
 			defer file.Close()
@@ -80,20 +79,17 @@ func InstallFnm(shell, sourceFile, version string) error {
 			// Write the text to the file
 			_, err = writer.WriteString(fnmPath)
 			if err != nil {
-				fmt.Println("Error:", err)
 				return err
 			}
 
 			// Flush the buffered writer to ensure all data is written to the file
 			err = writer.Flush()
 			if err != nil {
-				fmt.Println("Error:", err)
 				return err
 			}
 		}
 	}
 
-	fmt.Println("Installing Node.js version", version)
 	cmd = exec.Command(shell, "-c", "source "+sourceFile+" && fnm install "+version)
 
 	cmd.Stdout = os.Stdout
@@ -109,7 +105,7 @@ func InstallFnm(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("Node.js version installed successfully")
+	fmt.Println(colors.Green + "Node.js version installed successfully" + colors.Reset)
 	return nil
 }
 
@@ -145,9 +141,9 @@ func InstallPyenv(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("pyenv installed successfully")
+	fmt.Println(colors.Green + "pyenv installed successfully" + colors.Reset)
 
-	fmt.Println("Adding pyenv to PATH")
+	fmt.Println(colors.Cyan + "Adding pyenv to PATH" + colors.Reset)
 
 	pyenvPath := "export PYENV_ROOT=\"$HOME/.pyenv\"\n[[ -d $PYENV_ROOT/bin ]] && export PATH=\"$PYENV_ROOT/bin:$PATH\"\neval \"$(pyenv init -)\"\n\n"
 
@@ -157,7 +153,6 @@ func InstallPyenv(shell, sourceFile, version string) error {
 	// Open the file in read mode
 	file, err := os.Open(sourceFileDir)
 	if err != nil {
-		fmt.Println("Error:", err)
 		return err
 	}
 	defer file.Close()
@@ -167,7 +162,7 @@ func InstallPyenv(shell, sourceFile, version string) error {
 	inserted := false
 	for scanner.Scan() {
 		if strings.Contains(scanner.Text(), "PYENV_ROOT") {
-			fmt.Println("pyenv already added to PATH")
+			fmt.Println(colors.Yellow + "pyenv already added to PATH" + colors.Reset)
 			inserted = true
 			break
 		}
@@ -177,7 +172,6 @@ func InstallPyenv(shell, sourceFile, version string) error {
 	if !inserted {
 		file, err := os.OpenFile(sourceFileDir, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
 		if err != nil {
-			fmt.Println("Error:", err)
 			return err
 		}
 		defer file.Close()
@@ -188,19 +182,17 @@ func InstallPyenv(shell, sourceFile, version string) error {
 		// Write the text to the file
 		_, err = writer.WriteString(pyenvPath)
 		if err != nil {
-			fmt.Println("Error:", err)
 			return err
 		}
 
 		// Flush the buffered writer to ensure all data is written to the file
 		err = writer.Flush()
 		if err != nil {
-			fmt.Println("Error:", err)
 			return err
 		}
 	}
 
-	fmt.Println("Refreshing changes in terminal with source")
+	fmt.Println(colors.Cyan + "Refreshing changes in terminal with source" + colors.Reset)
 	cmd = exec.Command(shell, "-c", "source "+sourceFile+" && pyenv install "+version)
 
 	cmd.Stdout = os.Stdout
@@ -216,7 +208,7 @@ func InstallPyenv(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("Python version installed successfully")
+	fmt.Println(colors.Blue + "Python version installed successfully" + colors.Reset)
 	return nil
 }
 
@@ -252,8 +244,7 @@ func InstallNvm(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("nvm installed successfully")
-	fmt.Println("Installing Node.js version", version)
+	fmt.Println(colors.Green + "nvm installed successfully" + colors.Reset)
 	cmd = exec.Command(shell, "-c", "source "+sourceFile+" && nvm install "+version)
 
 	cmd.Stdout = os.Stdout
@@ -269,7 +260,7 @@ func InstallNvm(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("Node.js version installed successfully")
+	fmt.Println(colors.Green + "Node.js version installed successfully" + colors.Reset)
 	return nil
 }
 
@@ -305,10 +296,10 @@ func InstallSdkman(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("SDKMan installed successfully")
+	fmt.Println(colors.Green + "SDKMan installed successfully" + colors.Reset)
 
 	cmd = exec.Command(shell, "-c", `source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install java `+version+"-tem")
-	fmt.Println("Installing Java version", version, "Temurin SDK")
+	fmt.Println(colors.Purple+"Installing Java version", version, "Temurin SDK"+colors.Reset)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -323,7 +314,7 @@ func InstallSdkman(shell, sourceFile, version string) error {
 		return err
 	}
 
-	fmt.Println("Java version installed successfully")
+	fmt.Println(colors.Cyan + "Java version installed successfully" + colors.Reset)
 	return nil
 }
 
