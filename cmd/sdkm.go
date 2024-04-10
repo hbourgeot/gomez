@@ -5,9 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hbourgeot/gomez/colors"
 	"github.com/hbourgeot/gomez/helpers"
-
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 // sdkmCmd represents the sdkm command
@@ -27,11 +28,33 @@ to quickly create a Cobra application.`,
 		version, _ = cmd.Flags().GetString("version")
 		lts, _ := cmd.Flags().GetBool("lts")
 
+		if !helpers.IsValidVersion(version) {
+			fmt.Println(colors.Red, "Invalid version!", colors.Reset, "Please provide a valid version number. For example:", colors.Yellow, "16.10 or 20.0.4", colors.Reset)
+			return
+		}
+
+		if !helpers.VersionExists(version, "nvm") {
+			fmt.Println(colors.Red, "Version does not exist (yet)!", colors.Reset, "Please provide a valid version number. For example:", colors.Yellow, "16.10 or 20.0.4", colors.Reset)
+			return
+		}
+
 		if lts && version == "" {
-			fmt.Println("Installing the latest LTS Java version (21.0.2)")
-			version = "21.0.2"
+			fmt.Println("Installing the latest LTS Node.js version (20.12.1)")
+			version = "20.12.1"
+		} else if lts && version != "" {
+			validLts := strings.HasSuffix(version, "17") ||
+				strings.HasSuffix(version, "11") ||
+				strings.HasSuffix(version, "21") ||
+				strings.HasSuffix(version, "8")
+
+			if !validLts {
+				fmt.Println("The version provided", colors.Yellow, "is not a LTS version.", colors.Reset, "Please provide a valid LTS version.")
+				return
+			}
+
+			fmt.Println("Installing the LTS Java version", version)
 		} else {
-			fmt.Println("Installing Java ", version)
+			fmt.Println("Installing Java version", version)
 		}
 
 		forZsh, _ := cmd.Flags().GetBool("zsh")
@@ -47,6 +70,11 @@ to quickly create a Cobra application.`,
 		} else if forBash {
 			shell = "bash"
 			sourceFile = "$HOME/.bashrc"
+		} else {
+			shell = "bash"
+			sourceFile = "~/.bashrc"
+
+			fmt.Println("Shell not specified, using " + colors.Green + "bash" + colors.Reset + " as default.")
 		}
 
 		// Call the function to install fnm

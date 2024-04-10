@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hbourgeot/gomez/colors"
 	"github.com/hbourgeot/gomez/helpers"
 
 	"github.com/spf13/cobra"
@@ -25,6 +26,18 @@ Provide a version for install, default is 3.9. By default, the path environment 
 		if version == "" {
 			version = "3.10"
 		}
+
+		// check if the version is valid (only numbers and dots)
+		if !helpers.IsValidVersion(version) {
+			fmt.Println(colors.Red + "Invalid version!" + colors.Reset + " Please provide a valid version number. For example: " + colors.Green + "3.10 or 3.10.4" + colors.Reset)
+			return
+		}
+
+		if !helpers.VersionExists(version, "pyenv") {
+			fmt.Println(colors.Red + "Version does not exist (yet)!" + colors.Reset + " Please provide a valid version number. For example: " + colors.Green + "3.10 or 3.10.4" + colors.Reset)
+			return
+		}
+
 		fmt.Println("Installing Python version", version)
 
 		forZsh, _ := cmd.Flags().GetBool("zsh")
@@ -40,6 +53,11 @@ Provide a version for install, default is 3.9. By default, the path environment 
 		} else if forBash {
 			shell = "bash"
 			sourceFile = "~/.bashrc"
+		} else {
+			shell = "bash"
+			sourceFile = "~/.bashrc"
+
+			fmt.Println("Shell not specified, using " + colors.Green + "bash" + colors.Reset + " as default.")
 		}
 
 		// Call the function to install fnm

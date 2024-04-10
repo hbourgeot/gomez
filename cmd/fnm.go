@@ -5,7 +5,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hbourgeot/gomez/colors"
 	"github.com/hbourgeot/gomez/helpers"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -22,11 +24,28 @@ in the .profile file.`,
 		// version
 		lts, _ := cmd.Flags().GetBool("lts")
 
+		if !helpers.IsValidVersion(version) {
+			fmt.Println(colors.Red, "Invalid version!", colors.Reset, "Please provide a valid version number. For example:", colors.Yellow, "16.10 or 20.0.4", colors.Reset)
+			return
+		}
+
+		if !helpers.VersionExists(version, "nvm") {
+			fmt.Println(colors.Red, "Version does not exist (yet)!", colors.Reset, "Please provide a valid version number. For example:", colors.Yellow, "16.10 or 20.0.4", colors.Reset)
+			return
+		}
+
 		if lts && version == "" {
 			fmt.Println("Installing the latest LTS Node.js version (20.12.1)")
 			version = "20.12.1"
+		} else if lts && version != "" {
+			localVersion, _ := strconv.Atoi(version[:2])
+			if localVersion%2 != 0 {
+				fmt.Println("The version provided", colors.Yellow, "is not a LTS version.", colors.Reset, "Please provide a valid LTS version.")
+				return
+			}
+
+			fmt.Println("Installing the LTS Node.js version", version)
 		} else {
-			version, _ = cmd.Flags().GetString("version")
 			fmt.Println("Installing Node.js version", version)
 		}
 
@@ -43,6 +62,11 @@ in the .profile file.`,
 		} else if forBash {
 			shell = "bash"
 			sourceFile = "~/.bashrc"
+		} else {
+			shell = "bash"
+			sourceFile = "~/.bashrc"
+
+			fmt.Println("Shell not specified, using " + colors.Green + "bash" + colors.Reset + " as default.")
 		}
 
 		// Call the function to install fnm
